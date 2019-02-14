@@ -145,22 +145,12 @@ public class ScatterPlot extends VBox {
 
 		double xDif = xMax - xMin;
 		double yDif = yMax - yMin;
-		int xTicks = getSignificantDigit(xDif) + 2;
-		int yTicks = getSignificantDigit(yDif) + 2;
-
-		if (xTicks == 3) {
-			xTicks = 12;
-		}
-		if (yTicks == 3) {
-			yTicks = 12;
-		}
+		int xTicks = getSignificantDigit(xDif) + 1;
+		int yTicks = getSignificantDigit(yDif) + 1;
 
 		// Values for the y axis
 		double yTickSpacing = (canvas.getHeight() - PADDING * 2) / yTicks;
 		int yLog = (int) Math.log10(yDif);
-		if (yTicks == 12) {
-			yLog--;
-		}
 		double yIteration = Math.pow(10, yLog);
 		double yStart = Math.floor(yMin / yIteration) * yIteration;
 
@@ -189,9 +179,6 @@ public class ScatterPlot extends VBox {
 		// Values for the x axis
 		double xTickSpacing = (canvas.getWidth() - PADDING * 2) / xTicks;
 		int xLog = (int) Math.log10(xDif);
-		if (xTicks == 12) {
-			xLog--;
-		}
 		double xIteration = Math.pow(10, xLog);
 		double xStart = Math.floor(xMin / xIteration) * xIteration;
 
