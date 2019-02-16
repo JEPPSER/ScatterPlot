@@ -46,6 +46,7 @@ public class Main extends Application {
 			String data = new String(Files.readAllBytes(Paths.get(file.getPath())));
 			String[] lines = data.split("\n");
 			for (int i = 0; i < lines.length; i++) {
+				lines[i] = lines[i].replaceAll("\r", "");
 				String[] values = lines[i].split(",");
 				if (isEntry(values)) {
 					double x = Double.parseDouble(values[0]);
