@@ -81,7 +81,7 @@ public class ScatterPlot extends VBox {
 			// Converting mouse position to x and y values in the diagram.
 			double x = e.getX() / xScale - PADDING / xScale + xStart;
 			double y = canvas.getHeight() / yScale - e.getY() / yScale - PADDING / yScale + yStart;
-			mousePos.setText("x: " + Math.round(x) + " y: " + Math.round(y));
+			mousePos.setText("x: " + (Math.round(x * 1000) / 1000.0) + " y: " + (Math.round(y * 1000) / 1000.0));
 			
 			// Looping through all entries to find which one the mouse is hovering over.
 			for (int i = 0; i < entries.size(); i++) {
@@ -150,7 +150,7 @@ public class ScatterPlot extends VBox {
 
 		// Values for the y axis
 		double yTickSpacing = (canvas.getHeight() - PADDING * 2) / yTicks;
-		int yLog = (int) Math.log10(yDif);
+		double yLog = Math.floor(Math.log10(yDif));
 		double yIteration = Math.pow(10, yLog);
 		double yStart = Math.floor(yMin / yIteration) * yIteration;
 
@@ -178,7 +178,7 @@ public class ScatterPlot extends VBox {
 
 		// Values for the x axis
 		double xTickSpacing = (canvas.getWidth() - PADDING * 2) / xTicks;
-		int xLog = (int) Math.log10(xDif);
+		double xLog = Math.floor(Math.log10(xDif));
 		double xIteration = Math.pow(10, xLog);
 		double xStart = Math.floor(xMin / xIteration) * xIteration;
 
