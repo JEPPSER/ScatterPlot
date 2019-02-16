@@ -15,7 +15,7 @@ import javafx.scene.text.Text;
 public class ScatterPlot extends VBox {
 
 	private ArrayList<String> allNames;
-	private final Color[] COLORS = { Color.BLUE, Color.RED, Color.GREEN, Color.CYAN, Color.YELLOW, Color.PINK,
+	private final Color[] COLORS = { Color.BLUE, Color.RED, Color.GREEN, Color.PURPLE, Color.YELLOW, Color.PINK,
 			Color.BLACK };
 	private ArrayList<CSVEntry> entries;
 	private Canvas canvas;
@@ -71,41 +71,44 @@ public class ScatterPlot extends VBox {
 			}
 			c.setTranslateY(namePane.getPadding().getTop() + c.getRadius());
 		}
-		
+
 		mousePos.setText("x: 0 y: 0");
 	}
 
 	private void onHover(double xScale, double yScale, double xStart, double yStart) {
 		canvas.setOnMouseMoved(e -> {
-			
+
 			// Converting mouse position to x and y values in the diagram.
 			double x = e.getX() / xScale - PADDING / xScale + xStart;
 			double y = canvas.getHeight() / yScale - e.getY() / yScale - PADDING / yScale + yStart;
 			mousePos.setText("x: " + (Math.round(x * 1000) / 1000.0) + " y: " + (Math.round(y * 1000) / 1000.0));
-			
-			// Looping through all entries to find which one the mouse is hovering over.
+
+			// Looping through all entries to find which one the mouse is
+			// hovering over.
 			for (int i = 0; i < entries.size(); i++) {
-				
+
 				// Converting x and y position in the diagram to mouse position.
 				double xRaw = PADDING + xScale * entries.get(i).x - xScale * xStart;
 				double yRaw = canvas.getHeight() - PADDING - entries.get(i).y * yScale + yScale * yStart;
-				
-				// Check if distance is within the radius of the dot representing the entry.
+
+				// Check if distance is within the radius of the dot
+				// representing the entry.
 				double distance = distance(e.getX(), e.getY(), xRaw, yRaw);
 				if (distance <= 5) {
 					drawPlot();
 					drawPopupWindow(entries.get(i), xRaw, yRaw);
 					break;
 				}
-				
-				// Removes the popup window if the mouse isn't touching an entry.
+
+				// Removes the popup window if the mouse isn't touching an
+				// entry.
 				if (i == entries.size() - 1) {
 					drawPlot();
 				}
 			}
 		});
 	}
-	
+
 	private void drawPopupWindow(CSVEntry entry, double xRaw, double yRaw) {
 		g.setFill(Color.WHITE);
 		g.fillRoundRect(xRaw - 25, yRaw - 60, 50, 50, 10, 10);
@@ -115,9 +118,9 @@ public class ScatterPlot extends VBox {
 		g.fillText("x: " + entry.x, xRaw - 20, yRaw - 30);
 		g.fillText("y: " + entry.y, xRaw - 20, yRaw - 15);
 	}
-	
+
 	private double distance(double x1, double y1, double x2, double y2) {
-		return Math.hypot(x1-x2, y1-y2);
+		return Math.hypot(x1 - x2, y1 - y2);
 	}
 
 	private void drawPlot() {
@@ -145,18 +148,21 @@ public class ScatterPlot extends VBox {
 
 		double xDif = xMax - xMin;
 		double yDif = yMax - yMin;
-		int xTicks = getSignificantDigit(xDif) + 1;
+		int xTicks = getSignificantDigit(xDif);
 		double xIt = 1.0;
-		if (xTicks < 6) {
+		if (xTicks < 5) {
 			xIt = 0.5;
 			xTicks *= 2;
 		}
-		int yTicks = getSignificantDigit(yDif) + 1;
+		int yTicks = getSignificantDigit(yDif);
 		double yIt = 1.0;
-		if (yTicks < 6) {
+		if (yTicks < 5) {
 			yIt = 0.5;
 			yTicks *= 2;
 		}
+
+		yTicks += 2;
+		xTicks += 2;
 
 		// Values for the y axis
 		double yTickSpacing = (canvas.getHeight() - PADDING * 2) / yTicks;
@@ -164,6 +170,13 @@ public class ScatterPlot extends VBox {
 		double yIteration = Math.pow(10, yLog);
 		yIteration *= yIt;
 		double yStart = Math.floor(yMin / yIteration) * yIteration;
+
+		// Values for the x axis
+		double xTickSpacing = (canvas.getWidth() - PADDING * 2) / xTicks;
+		double xLog = Math.floor(Math.log10(xDif));
+		double xIteration = Math.pow(10, xLog);
+		xIteration *= xIt;
+		double xStart = Math.floor(xMin / xIteration) * xIteration;
 
 		// Drawing the y axis
 		for (int i = 0; i < yTicks + 1; i++) {
@@ -186,13 +199,6 @@ public class ScatterPlot extends VBox {
 				g.fillText(String.valueOf((int) (yStart + i * yIteration)), x1 - 30, y + 5);
 			}
 		}
-
-		// Values for the x axis
-		double xTickSpacing = (canvas.getWidth() - PADDING * 2) / xTicks;
-		double xLog = Math.floor(Math.log10(xDif));
-		double xIteration = Math.pow(10, xLog);
-		xIteration *= xIt;
-		double xStart = Math.floor(xMin / xIteration) * xIteration;
 
 		// Drawing the x axis
 		for (int i = 0; i < xTicks + 1; i++) {
@@ -240,7 +246,7 @@ public class ScatterPlot extends VBox {
 
 			// Set opacity to 70%.
 			c = new Color(c.getRed(), c.getGreen(), c.getBlue(), 0.7);
-			
+
 			// Converting entry's x and y to canvas x and y.
 			double x = PADDING + xScale * entries.get(i).x - xScale * xStart;
 			double y = canvas.getHeight() - PADDING - entries.get(i).y * yScale + yScale * yStart;
