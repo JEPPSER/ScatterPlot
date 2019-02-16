@@ -146,12 +146,23 @@ public class ScatterPlot extends VBox {
 		double xDif = xMax - xMin;
 		double yDif = yMax - yMin;
 		int xTicks = getSignificantDigit(xDif) + 1;
+		double xIt = 1.0;
+		if (xTicks < 6) {
+			xIt = 0.5;
+			xTicks *= 2;
+		}
 		int yTicks = getSignificantDigit(yDif) + 1;
+		double yIt = 1.0;
+		if (yTicks < 6) {
+			yIt = 0.5;
+			yTicks *= 2;
+		}
 
 		// Values for the y axis
 		double yTickSpacing = (canvas.getHeight() - PADDING * 2) / yTicks;
 		double yLog = Math.floor(Math.log10(yDif));
 		double yIteration = Math.pow(10, yLog);
+		yIteration *= yIt;
 		double yStart = Math.floor(yMin / yIteration) * yIteration;
 
 		// Drawing the y axis
@@ -180,6 +191,7 @@ public class ScatterPlot extends VBox {
 		double xTickSpacing = (canvas.getWidth() - PADDING * 2) / xTicks;
 		double xLog = Math.floor(Math.log10(xDif));
 		double xIteration = Math.pow(10, xLog);
+		xIteration *= xIt;
 		double xStart = Math.floor(xMin / xIteration) * xIteration;
 
 		// Drawing the x axis
